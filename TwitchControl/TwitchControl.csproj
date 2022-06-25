@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <BundleExtraAssemblies>System,ThirdParty</BundleExtraAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.0.1" />
+    <PackageReference Include="TwitchLib" Version="3.3.0" />
+    <PackageReference Include="TwitchLib.Client" Version="3.2.6-preview-efac467b4b08e2ed974742f775517361850ffe33" />
+    <PackageReference Include="TwitchLib.Client.Enums" Version="3.2.6-preview-efac467b4b08e2ed974742f775517361850ffe33" />
+    <PackageReference Include="TwitchLib.Client.Models" Version="3.2.6-preview-efac467b4b08e2ed974742f775517361850ffe33" />
+    <PackageReference Include="TwitchLib.Communication" Version="1.0.4" />
+  </ItemGroup>
+
+</Project>

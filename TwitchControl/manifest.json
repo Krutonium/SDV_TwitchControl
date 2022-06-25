@@ -1,0 +1,10 @@
+﻿{
+  "Name": "TwitchControl",
+  "Author": "Krutonium",
+  "Version": "1.0.0",
+  "Description": "Allows Twitch to influence your game in various ways",
+  "UniqueID": "krutonium.twitchcontrol",
+  "EntryDll": "TwitchControl.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": []
+}

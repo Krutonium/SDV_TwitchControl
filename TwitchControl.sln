@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchControl", "TwitchControl\TwitchControl.csproj", "{B47F22C3-39C6-45EE-A4D4-A4CEBFF437A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B47F22C3-39C6-45EE-A4D4-A4CEBFF437A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B47F22C3-39C6-45EE-A4D4-A4CEBFF437A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B47F22C3-39C6-45EE-A4D4-A4CEBFF437A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B47F22C3-39C6-45EE-A4D4-A4CEBFF437A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {172DDAE0-8E1C-4B34-9CED-B9FC538C7EF4}
+	EndGlobalSection
+EndGlobal
