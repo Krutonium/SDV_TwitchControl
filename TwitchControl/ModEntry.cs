@@ -1,10 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 using System;
-using System.Linq;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
@@ -55,19 +52,22 @@ namespace TwitchControl
         
         
         private TwitchClient client = new TwitchClient();
-        private ModConfig config = new ModConfig();
+        private config.ModConfig config = new config.ModConfig();
         public override void Entry(IModHelper helper)
         {
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
-            config = Helper.ReadConfig<ModConfig>();
+            config = Helper.ReadConfig<config.ModConfig>();
             if (config.Edited == false)
             {
                 Monitor.Log("You need to edit the configuration!");
                 Environment.Exit(1);
             }
+
+            var Mon= this.Monitor;
             Bot();
             helper.Events.GameLoop.SaveLoaded += GameLoopOnSaveLoaded;
             helper.Events.GameLoop.ReturnedToTitle += GameLoopOnReturnedToTitle;
+            
         }
 
         private void GameLoopOnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
@@ -80,19 +80,7 @@ namespace TwitchControl
             client.SendMessage(config.Channel, "Ready to accept commands!");
         }
 
-        class ModConfig
-        {
-            public string Username = "PFCKrutonium";
-            public string oAuth = "oauth:xyxyxyxyxyxyxyxyxyxyxyxyxy";
-            public string Channel = "PFCKrutonium";
-            public bool Edited = false;
-            public int CoinsPerBit = 100;
-            public string RewardIDRemove100 = "7d344760-1876-4b5b-a4ee-4e991ac76ecc";
-            public string RewardIDRemove1000 = "baac6fc0-c5b4-4c91-9357-5438f6db8a25";
-            public string RewardIDAdd100 = "96bce38f-927b-4ca0-8a05-901e76072c0f";
-            public string RewardIDAdd1000 = "8691d6cc-4e12-4a83-83dc-1f9963d40be2";
-            
-        }
+
         
         public void Bot()
         {
@@ -115,40 +103,33 @@ namespace TwitchControl
             client.Connect();
             
         }
-
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
         {
-            if(e.Command.CommandText.ToLower() == "test")
-            {
-                client.SendMessage(e.Command.ChatMessage.Channel, "Test");
-            }
             
-            if (e.Command.CommandText.ToLower().StartsWith("money"))
+            if(e.Command.CommandText.ToLower() == "ping")
             {
-                if (!Context.IsWorldReady) return;
-                Monitor.Log("Money command received");
-                if (e.Command.ChatMessage.Bits > 0)
-                {
-                    //!money add bitsAmount
-                    //Ratio is 1 bit -> 100 coins
-                    int coins = e.Command.ChatMessage.Bits * 100;
-                    if (e.Command.ArgumentsAsString.ToLower().Contains("add"))
-                    {
-                        Monitor.Log("Adding " + coins + " coins");
-                        Game1.player.Money += coins;
-                    }
-                    else if (e.Command.ArgumentsAsString.ToLower().Contains("remove"))
-                    {
-                        Monitor.Log("Removing " + coins + " coins");
-                        Game1.player.Money -= coins;
-                    }
-                    else
-                    {
-                        Monitor.Log("No add or remove specified, assuming add");
-                        Game1.player.Money += coins;
-                    }
+                client.SendMessage(e.Command.ChatMessage.Channel, "Pong!");
+            }
 
-                }
+            if (e.Command.CommandText.ToLower() == "help")
+            {
+                string Help =   "!money add/remove <bits>. " 
+                              + "You can also use channel points to add or remove coins."
+                              //+ "!time set <time> "
+                              + "!time add/remove <bits where 100 bits = 1 hour). ";
+                client.SendMessage(e.Command.ChatMessage.Channel, Help);
+            }
+            if (!Context.IsWorldReady) return;
+            
+            if (e.Command.ChatMessage.Bits != 0)
+            {
+                BitsActions action = new BitsActions
+                {
+                    Monitor = Monitor,
+                    Config = config
+                };
+                Monitor.Log("Got to DoBitsCommand");
+                action.DoBitsAction(e.Command);
             }
         }
 
@@ -159,31 +140,13 @@ namespace TwitchControl
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            this.Monitor.Log($"Message received: {e.ChatMessage.Message}");
-            Monitor.Log(e.ChatMessage.CustomRewardId);
-            //Remove 100 coins from Stardew
-            if (e.ChatMessage.CustomRewardId == config.RewardIDRemove100)
+            if (!Context.IsWorldReady) return;
+            PointsActions action = new PointsActions
             {
-                Game1.player.Money -= 100;        
-            }
-
-            //Remove 1000 coins from Stardew
-            if (e.ChatMessage.CustomRewardId == config.RewardIDAdd1000)
-            {
-                Game1.player.Money -= 1000;
-            }
-            
-            //Add 100 Coins to Stardew
-            if (e.ChatMessage.CustomRewardId == config.RewardIDAdd100)
-            {
-                Game1.player.Money += 100;
-            }
-            
-            //Add 1000 Coins to Stardew
-            if (e.ChatMessage.CustomRewardId == config.RewardIDAdd1000)
-            {
-                Game1.player.Money += 1000;
-            }
+                Monitor = Monitor,
+                Config = config
+            };
+            action.DoPointsAction(e.ChatMessage);
         }
 
         private void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
